@@ -40,5 +40,12 @@ func main() {
 		}
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+
+		// Simple echo-answer for "/start"
+		if update.Message.IsCommand() && update.Message.Command() == "start" {
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello! Bot started and ready to work")
+
+			bot.Send(msg)
+		}
 	}
 }
