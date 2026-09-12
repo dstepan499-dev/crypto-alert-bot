@@ -1,0 +1,18 @@
+# Скомпилированные файлы
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
+# Конфигурация и секреты
+.env
+
+# База данных SQLite
+*.db
+*.db-journal
+
+# IDE
+.idea/
+.vscode/
