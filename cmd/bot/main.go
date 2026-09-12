@@ -1,11 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strings"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
+
+	"github.com/dstepan499-dev/crypto-alert-bot/internal/coingecko"
 )
 
 func main() {
@@ -27,7 +32,8 @@ func main() {
 	bot.Debug = true
 	log.Printf("Authorized as bot: @%s", bot.Self.UserName)
 
-	// Update settings
+	cryptoClient := coingecko.NewClient(10 * time.Second)
+
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
@@ -37,6 +43,47 @@ func main() {
 	for update := range updates {
 		if update.Message == nil {
 			continue
+		}
+
+		chatID := update.Message.Chat.ID
+
+		if update.Message.IsCommand() {
+			switch update.Message.Command() {
+			case "start":
+				msg := tgbotapi.NewMessage(chatID,
+					"Hello!\n\n"+"I can show you cryptocurrency prices.\n"+
+						"Use command:\n"+
+						"`/price btc` or `/price eth usd`")
+				msg.ParseMode = "Markdown"
+				bot.Send(msg)
+			case "price":
+				args := strings.Fields(update.Message.CommandArguments())
+				if len(args) == 0 {
+					msg := tgbotapi.NewMessage(chatID, "Select coin. Example: `/price btc` or `/price sol usd`")
+					msg.ParseMode = "Markdown"
+					bot.Send(msg)
+					continue
+				}
+
+				coin := args[0]
+				currency := "usd"
+				if len(args) > 1 {
+					currency = args[1]
+				}
+
+				price, err := cryptoClient.GetPrice(coin, currency)
+				if err != nil {
+					log.Printf("Price receiving error: %v", err)
+					msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("Error: %v", err))
+					bot.Send(msg)
+					continue
+				}
+
+				replyText := fmt.Sprintf("Price *%s*: **$%.2f** (%s)", strings.ToUpper(coin), price, strings.ToUpper(currency))
+				msg := tgbotapi.NewMessage(chatID, replyText)
+				msg.ParseMode = "Markdown"
+				bot.Send(msg)
+			}
 		}
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
