@@ -105,7 +105,7 @@ func main() {
 }
 
 func startAlertChecker(bot *tgbotapi.BotAPI, db *storage.Storage, cryptoClient *coingecko.Client) {
-	ticker := time.NewTicker(30 * time.Second) // опрос каждые 30 секунд
+	ticker := time.NewTicker(30 * time.Second)
 	for range ticker.C {
 		alerts, err := db.GetAlerts()
 		if err != nil {
