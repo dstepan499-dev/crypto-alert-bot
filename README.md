@@ -2,7 +2,6 @@
 
 A lightweight and efficient Telegram Bot written in **Go (Golang)** for tracking cryptocurrency prices and receiving price threshold alerts.
 
----
 
 ## Features
 - **Real-time Prices:** Fetches live cryptocurrency data via CoinGecko REST API (`/price btc`, `/price eth`).
@@ -11,7 +10,6 @@ A lightweight and efficient Telegram Bot written in **Go (Golang)** for tracking
 - **Persistent Storage:** SQLite database for storing active alerts and user subscriptions.
 - **Docker Ready:** Fully containerized with a lightweight multi-stage Docker build (~20MB image).
 
----
 
 ## Tech Stack
 - **Language:** Go 1.23+
@@ -19,7 +17,6 @@ A lightweight and efficient Telegram Bot written in **Go (Golang)** for tracking
 - **API:** Telegram Bot API (`go-telegram-bot-api`), CoinGecko Public API
 - **DevOps:** Docker, Docker Compose
 
----
 
 ## Quick Start
 
@@ -37,7 +34,6 @@ docker compose up -d --build
 4. Run Locally:
 go run cmd/bot/main.go
 
----
 
 ## Commands
 
